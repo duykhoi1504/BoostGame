@@ -8,6 +8,8 @@ public class Movement : MonoBehaviour
     [SerializeField] float thrust;
     [SerializeField] float speedRotate;
     AudioSource audi;
+    [SerializeField] AudioClip mainEngine;
+   
     Rigidbody rigi;
     void Start()
     {
@@ -28,7 +30,7 @@ public class Movement : MonoBehaviour
         if(Input.GetKey(KeyCode.Space)){
             rigi.AddRelativeForce(Vector3.up* thrust*Time.deltaTime);
             if(!audi.isPlaying){
-                audi.Play();
+                audi.PlayOneShot(mainEngine);
             }
             
         }else

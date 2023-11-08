@@ -8,46 +8,71 @@ using UnityEngine.SceneManagement;
 
 public class CollisionHandler : MonoBehaviour
 {
-    
-    [SerializeField] Vector3 spawnPos;
-    
-    private void Awake() {
-        spawnPos=this.transform.position;
+    [SerializeField] float levelLoadDelay;
+    private Vector3 spawnPos;
+    AudioSource audi;
+    [SerializeField] AudioClip success;
+    [SerializeField] AudioClip crash;
+     bool isTransitioning=false;
+    private void Awake()
+    {
+        spawnPos = this.transform.position;
+        audi=GetComponent<AudioSource>();
     }
-    void Start(){
-       
-       
-    }
-    private void OnCollisionEnter(Collision other) {
-        switch(other.gameObject.tag){
+
+    private void OnCollisionEnter(Collision other)
+    {
+        if(isTransitioning)return;
+        switch (other.gameObject.tag)
+        {
             case "Obstacle":
-                // Debug.Log("obstacle");
-                // this.transform.position=spawnPos;
-                // Quaternion rote=Quaternion.Euler(0,0,0);
-                // this.transform.rotation=rote;
-                // this.gameObject.GetComponent<Movement>().GetComponent<Rigidbody>().isKinematic=true;
-                // this.gameObject.GetComponent<Movement>().GetComponent<Rigidbody>().isKinematic=false;
-            ReloadScene();
+                StartCrashSequence();
                 break;
             case "finish":
-                LoadNextLevel();
+                StartSuccessSequence();
                 break;
-            default :
+            default:
                 break;
 
         }
     }
-    void ReloadScene(){
-        int currentSceneIndex =SceneManager.GetActiveScene().buildIndex;
+    void StartSuccessSequence(){
+        isTransitioning=true;
+        audi.Stop();
+        audi.PlayOneShot(success);
+        
+         GetComponent<Movement>().enabled = false;
+        Invoke("LoadNextLevel", levelLoadDelay);
+    }
+    void StartCrashSequence()
+    {
+        isTransitioning=true;
+        audi.Stop();
+
+        audi.PlayOneShot(crash);
+        GetComponent<Movement>().enabled = false;
+        Invoke("ReloadScene", levelLoadDelay);
+    }
+    void ReloadScene()
+    {
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         //GetActiveScene(): Hàm này trả về Scene hiện tại mà người chơi đang chơi trong game
         //buildIndex:  trả về chỉ số (index) của Scene 
         SceneManager.LoadScene(currentSceneIndex);
     }
-    void LoadNextLevel(){
-         int currentSceneIndex =SceneManager.GetActiveScene().buildIndex;
-        int nextSceneIndex=currentSceneIndex+1;
-        if(nextSceneIndex==SceneManager.sceneCountInBuildSettings)
-            nextSceneIndex=0;
+    void LoadNextLevel()
+    {
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        int nextSceneIndex = currentSceneIndex + 1;
+        if (nextSceneIndex == SceneManager.sceneCountInBuildSettings)
+            nextSceneIndex = 0;
         SceneManager.LoadScene(nextSceneIndex);
     }
+        // void DefaultStartPos(){
+    // this.transform.position=spawnPos;
+    // Quaternion rote=Quaternion.Euler(0,0,0);
+    // this.transform.rotation=rote;
+    // this.gameObject.GetComponent<Movement>().GetComponent<Rigidbody>().isKinematic=true;
+    // this.gameObject.GetComponent<Movement>().GetComponent<Rigidbody>().isKinematic=false;
+    // }
 }
