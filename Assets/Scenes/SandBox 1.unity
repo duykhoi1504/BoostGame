@@ -2587,6 +2587,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1193821701, guid: 46436006dd3fd9843922574024b2209d, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3870460315998390550, guid: 46436006dd3fd9843922574024b2209d, type: 3}
       propertyPath: m_Name
       value: launch pad
