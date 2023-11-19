@@ -1,8 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.SearchService;
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -13,6 +9,11 @@ public class CollisionHandler : MonoBehaviour
     AudioSource audi;
     [SerializeField] AudioClip success;
     [SerializeField] AudioClip crash;
+    [SerializeField] ParticleSystem SuccessPa;
+    [SerializeField] ParticleSystem ExplosionPa;
+
+
+
      bool isTransitioning=false;
     private void Awake()
     {
@@ -40,7 +41,7 @@ public class CollisionHandler : MonoBehaviour
         isTransitioning=true;
         audi.Stop();
         audi.PlayOneShot(success);
-        
+        SuccessPa.Play();
          GetComponent<Movement>().enabled = false;
         Invoke("LoadNextLevel", levelLoadDelay);
     }
@@ -48,7 +49,7 @@ public class CollisionHandler : MonoBehaviour
     {
         isTransitioning=true;
         audi.Stop();
-
+        ExplosionPa.Play();
         audi.PlayOneShot(crash);
         GetComponent<Movement>().enabled = false;
         Invoke("ReloadScene", levelLoadDelay);
@@ -75,4 +76,5 @@ public class CollisionHandler : MonoBehaviour
     // this.gameObject.GetComponent<Movement>().GetComponent<Rigidbody>().isKinematic=true;
     // this.gameObject.GetComponent<Movement>().GetComponent<Rigidbody>().isKinematic=false;
     // }
+    
 }
