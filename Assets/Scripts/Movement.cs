@@ -6,7 +6,7 @@ public class Movement : MonoBehaviour
 {
     // Start is called before the first frame update
     [SerializeField] float thrust;
-    [SerializeField] float speedRotate;
+    [SerializeField] [Range(0,200)]float speedRotate;
     AudioSource audi;
 
     [SerializeField] AudioClip mainEngine;
@@ -35,43 +35,69 @@ public class Movement : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.Space))
         {
-            rigi.AddRelativeForce(Vector3.up * thrust * Time.deltaTime);
-            if (!audi.isPlaying)
-            {
-                audi.PlayOneShot(mainEngine);
-            }
-            if (!mainEnginePa.isPlaying)
-                mainEnginePa.Play();
+            StartThrust();
         }
         else
         {
-            audi.Stop();
-            mainEnginePa.Stop();
-
+            StopThrust();
         }
     }
+
+     private void StartThrust()
+    {
+        rigi.AddRelativeForce(Vector3.up * thrust * Time.deltaTime);
+        if (!audi.isPlaying)
+        {
+            audi.PlayOneShot(mainEngine);
+        }
+        if (!mainEnginePa.isPlaying)
+            mainEnginePa.Play();
+    }
+
+    private void StopThrust()
+    {
+        audi.Stop();
+        mainEnginePa.Stop();
+    }
+
     private void ProcessRotation()
     {
         if (Input.GetKey(KeyCode.A))
         {
-            ApplyRotation(speedRotate);
-            if (!rightEnginePa.isPlaying)
-                rightEnginePa.Play();
+            RightRotate();
         }
         else if (Input.GetKey(KeyCode.D))
         {
-            ApplyRotation(-speedRotate);
-
-            if (!leftEnginePa.isPlaying)
-                leftEnginePa.Play();
+            LeftRotate();
         }
         else
         {
-            rightEnginePa.Stop();
-            leftEnginePa.Stop();
+            StopRotate();
 
         }
     }
+
+    private void StopRotate()
+    {
+        rightEnginePa.Stop();
+        leftEnginePa.Stop();
+    }
+
+    private void LeftRotate()
+    {
+        ApplyRotation(-speedRotate);
+
+        if (!leftEnginePa.isPlaying)
+            leftEnginePa.Play();
+    }
+
+    private void RightRotate()
+    {
+        ApplyRotation(speedRotate);
+        if (!rightEnginePa.isPlaying)
+            rightEnginePa.Play();
+    }
+
     private void ApplyRotation(float SpeedRotate)
     {
         rigi.freezeRotation = true;

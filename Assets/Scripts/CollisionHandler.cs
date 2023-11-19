@@ -11,19 +11,37 @@ public class CollisionHandler : MonoBehaviour
     [SerializeField] AudioClip crash;
     [SerializeField] ParticleSystem SuccessPa;
     [SerializeField] ParticleSystem ExplosionPa;
+    bool collisonDisabled = false;
 
 
-
-     bool isTransitioning=false;
-    private void Awake()
+    bool isTransitioning = false;
+    private void Start()
     {
         spawnPos = this.transform.position;
-        audi=GetComponent<AudioSource>();
+        audi = GetComponent<AudioSource>();
+    }
+    private void Update()
+    {
+        respondDebugKeys();
+    }
+
+    void respondDebugKeys()
+    {
+        if(Input.GetKey(KeyCode.J)){
+            //load next level
+            LoadNextLevel();
+        }
+        if(Input.GetKey(KeyCode.K)){
+            //disable collision
+            if(collisonDisabled=!collisonDisabled){
+
+            }
+        }
     }
 
     private void OnCollisionEnter(Collision other)
     {
-        if(isTransitioning)return;
+        if (isTransitioning || collisonDisabled) return;
         switch (other.gameObject.tag)
         {
             case "Obstacle":
@@ -37,17 +55,18 @@ public class CollisionHandler : MonoBehaviour
 
         }
     }
-    void StartSuccessSequence(){
-        isTransitioning=true;
+    void StartSuccessSequence()
+    {
+        isTransitioning = true;
         audi.Stop();
         audi.PlayOneShot(success);
         SuccessPa.Play();
-         GetComponent<Movement>().enabled = false;
+        GetComponent<Movement>().enabled = false;
         Invoke("LoadNextLevel", levelLoadDelay);
     }
     void StartCrashSequence()
     {
-        isTransitioning=true;
+        isTransitioning = true;
         audi.Stop();
         ExplosionPa.Play();
         audi.PlayOneShot(crash);
@@ -69,12 +88,12 @@ public class CollisionHandler : MonoBehaviour
             nextSceneIndex = 0;
         SceneManager.LoadScene(nextSceneIndex);
     }
-        // void DefaultStartPos(){
+    // void DefaultStartPos(){
     // this.transform.position=spawnPos;
     // Quaternion rote=Quaternion.Euler(0,0,0);
     // this.transform.rotation=rote;
     // this.gameObject.GetComponent<Movement>().GetComponent<Rigidbody>().isKinematic=true;
     // this.gameObject.GetComponent<Movement>().GetComponent<Rigidbody>().isKinematic=false;
     // }
-    
+
 }
